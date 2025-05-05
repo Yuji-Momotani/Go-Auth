@@ -34,7 +34,7 @@ func SetupRouter(
 			auth.POST("/session-cookie/logout", salogout.Handler)
 		}
 
-		sessionAuth := api.Group("/session-auth")
+		sessionAuth := api.Group("/session-cookie")
 		{
 			// クッキー・セッション認証用の認証ミドルウェア
 			sessionAuth.Use(m.SessionCookieAuth)

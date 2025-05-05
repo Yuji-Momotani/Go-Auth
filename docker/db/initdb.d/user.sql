@@ -5,6 +5,6 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
   id          INT(10) PRIMARY KEY AUTO_INCREMENT,
-  user_id     VARCHAR(15),
-	password    VARCHAR(30)
+  user_id     VARCHAR(255),
+	password    VARCHAR(255)
 );

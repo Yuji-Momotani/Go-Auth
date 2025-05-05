@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go-auth-example/api/infra/cache"
 	"go-auth-example/api/infra/db/model"
+	"time"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -39,15 +40,16 @@ func NewSessionLogin(
 	return &sessionLogin{db, rClient}
 }
 
+const SessionExpire = 24
+
 func (u *sessionLogin) Execute(
 	ctx context.Context,
 	params SessionLoginParams,
 ) (string, error) {
 	// 本来respository層でデータ操作するが、省略してusecaseで実装
-	password, _ := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
 	user := model.User{}
 	err := u.db.
-		Where("user_id = ? AND password = ?", params.UserID, password).
+		Where("user_id = ?", params.UserID).
 		First(&user).
 		Error
 	if err != nil {
@@ -58,9 +60,18 @@ func (u *sessionLogin) Execute(
 		return "", fmt.Errorf("failed db.First:%s", err)
 	}
 
+	if err := bcrypt.CompareHashAndPassword(
+		[]byte(user.Password),
+		[]byte(params.Password),
+	); err != nil {
+		// パスワード不一致
+		return "", ErrLoginFaild
+	}
+
 	// セッションIDを発行
 	sessionID := uuid.NewString()
-	err = u.rClient.Set(ctx, sessionID, params.UserID, 0)
+	expire := SessionExpire * time.Hour
+	err = u.rClient.Set(ctx, sessionID, params.UserID, expire)
 	if err != nil {
 		return "", err
 	}
