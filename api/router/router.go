@@ -17,18 +17,25 @@ func SetupRouter(
 ) *gin.Engine {
 	r := gin.Default()
 
-	// Basic認証ルート
-	r.GET("/basic-auth", ba.Handler)
-
-	// sessin-cookie認証
-	r.POST("/session-auth/login", salogin.Handler)
-	r.POST("/session-auth/logout", salogout.Handler)
-
 	// ここでミドルウェアで認証したい
 	api := r.Group("/api")
 	{
+		auth := api.Group("/auth")
+		{
+			// ユーザー登録
+			auth.POST("/user")
+
+			// Basic認証
+			auth.GET("/basic", ba.Handler)
+
+			// sessin-cookie認証
+			auth.POST("/session-cookie/login", salogin.Handler)
+			auth.POST("/session-cookie/logout", salogout.Handler)
+		}
+
 		sessionAuth := api.Group("/session-auth")
 		{
+			// クッキー・セッション認証用の認証ミドルウェア
 			sessionAuth.Use(m.SessionCookieAuth)
 			sessionAuth.GET("/hello", func(ctx *gin.Context) {
 				userID, exists := ctx.Get(middleware.KeyUserID)
