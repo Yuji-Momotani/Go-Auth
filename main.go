@@ -15,17 +15,28 @@ import (
 )
 
 func main() {
-	// DI（将来的に別ファイルに書き出す）
 	db := initdb()
 	rClient := cache.NewRedisClient()
 	m := middleware.NewAuth(rClient)
 	ba := controller.NewBasicAuth()
 
+	// usecase
+	userRegister := usecase.NewUserRegister(db)
 	usecaseSLogin := usecase.NewSessionLogin(db, rClient)
+
+	// controller
+	controllerRegistUser := controller.NewRegistUser(userRegister)
 	controllerSLogin := controller.NewSessionLogin(usecaseSLogin)
 	controllerSLogout := controller.NewSessionLogout()
 
-	r := router.SetupRouter(m, ba, controllerSLogin, controllerSLogout)
+	r := router.SetupRouter(
+		m,
+		ba,
+		controllerRegistUser,
+		controllerSLogin,
+		controllerSLogout,
+	)
+
 	r.Run(":8080")
 }
 

@@ -12,6 +12,7 @@ import (
 func SetupRouter(
 	m middleware.Auth,
 	ba controller.BasicAuth,
+	registUser controller.RegistUser,
 	salogin controller.SessionLogin,
 	salogout controller.SessionLogout,
 ) *gin.Engine {
@@ -23,7 +24,7 @@ func SetupRouter(
 		auth := api.Group("/auth")
 		{
 			// ユーザー登録
-			auth.POST("/user")
+			auth.POST("/user", registUser.Handle)
 
 			// Basic認証
 			auth.GET("/basic", ba.Handler)

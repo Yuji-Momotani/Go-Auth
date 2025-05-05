@@ -24,8 +24,8 @@ type (
 	}
 )
 
-func NewUserRegister() UserRegister {
-	return &userRegister{}
+func NewUserRegister(db *gorm.DB) UserRegister {
+	return &userRegister{db}
 }
 
 func (u *userRegister) Execute(

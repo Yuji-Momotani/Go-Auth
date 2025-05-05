@@ -8,6 +8,7 @@ import (
 	"go-auth-example/api/infra/db/model"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -43,9 +44,10 @@ func (u *sessionLogin) Execute(
 	params SessionLoginParams,
 ) (string, error) {
 	// 本来respository層でデータ操作するが、省略してusecaseで実装
+	password, _ := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
 	user := model.User{}
 	err := u.db.
-		Where("user_id = ? AND password = ?", params.UserID, params.Password).
+		Where("user_id = ? AND password = ?", params.UserID, password).
 		First(&user).
 		Error
 	if err != nil {
