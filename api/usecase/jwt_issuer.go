@@ -54,8 +54,8 @@ func (u *jwtIssuer) Execute(params JWTIssuerParams) (string, error) {
 	// JWTを生成
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		// ペイロードにユーザーIDと有効期限を設定
-		"user_id": user.UserID,
-		"exp":     time.Now().Add(time.Hour * 1).Unix(),
+		"sub": user.UserID,
+		"exp": time.Now().Add(time.Hour * 1).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
