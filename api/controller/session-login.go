@@ -28,7 +28,7 @@ func NewSessionLogin(usecase usecase.SessionLogin) SessionLogin {
 
 func (h *sessionLogin) Handler(c *gin.Context) {
 	var req Request
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		c.Status(http.StatusBadRequest)
 
 		return
@@ -46,12 +46,6 @@ func (h *sessionLogin) Handler(c *gin.Context) {
 		return
 	}
 
-	// if req.UserName != USERNAME || req.Password != PASSWORD {
-	// 	c.Status(http.StatusUnauthorized)
-	// 	return
-	// }
-
-	// session_id, _ := uuid.NewUUID()
 	c.SetCookie("session_id", sessionID, 3600, "/", "localhost", false, true)
 	c.Status(http.StatusOK)
 }
