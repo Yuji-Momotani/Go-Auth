@@ -23,11 +23,13 @@ func main() {
 	// usecase
 	userRegister := usecase.NewUserRegister(db)
 	usecaseSLogin := usecase.NewSessionLogin(db, rClient)
+	usecaseJWTIssuer := usecase.NewJWTIssuer(db)
 
 	// controller
 	controllerRegistUser := controller.NewRegistUser(userRegister)
 	controllerSLogin := controller.NewSessionLogin(usecaseSLogin)
 	controllerSLogout := controller.NewSessionLogout()
+	controllerJLogin := controller.NewJWTLogin(usecaseJWTIssuer)
 
 	r := router.SetupRouter(
 		m,
@@ -35,6 +37,7 @@ func main() {
 		controllerRegistUser,
 		controllerSLogin,
 		controllerSLogout,
+		controllerJLogin,
 	)
 
 	r.Run(":8080")

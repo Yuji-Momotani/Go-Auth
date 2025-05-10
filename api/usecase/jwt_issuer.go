@@ -29,8 +29,8 @@ type (
 	}
 )
 
-func NewJWTLogin() JWTIssuer {
-	return &jwtIssuer{}
+func NewJWTIssuer(db *gorm.DB) JWTIssuer {
+	return &jwtIssuer{db}
 }
 
 func (u *jwtIssuer) Execute(params JWTIssuerParams) (string, error) {
