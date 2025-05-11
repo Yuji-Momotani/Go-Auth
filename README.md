@@ -159,7 +159,7 @@ KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30 ←署名
 ヘッダーの`Authorization`にトークンを含める
 
 ```
-Authorization: "Bearer {ユーザー名とパスワードをBase64でエンコードしたもの}"
+Authorization: "Bearer {トークン(JWT)}"
 ```
 
 ### メリット
@@ -181,3 +181,5 @@ Authorization: "Bearer {ユーザー名とパスワードをBase64でエンコ�
 | 複数ドメイン       | 制約が多い（Cookie の制限）            | トークンなら自由                               |
 | クライアント自由度 | Web ブラウザ向き                       | **モバイル・SPA（Single Page App）・API 向き** |
 | ログアウト処理     | サーバー側でセッション破棄             | JWT は難しい（ブラックリスト対応など必要）     |
+
+ƒ
